@@ -1,13 +1,13 @@
+import json
 import os
 import pickle
-import json
 import shutil
 import tarfile
 
 if __name__ == "__main__":
     # See https://stackoverflow.com/questions/45078157/load-spydata-file
     TEMP_DIR = "./temp"
-    paths = ["Algo.spydata", 'Interface.spydata']  # Files
+    paths = [""]  # Files
     for path in paths:
         # Its just a special tar
         new_path = path.replace(".spydata", ".tar")
@@ -25,8 +25,9 @@ if __name__ == "__main__":
             print(file)
             if file.endswith(".pickle"):
                 # Unpickle file object
-                with open(os.path.join(TEMP_DIR, file), 'rb') as f:
-                    data_temp = pickle.load(f)  # Security concerns over unpickling objects is accepted
+                with open(os.path.join(TEMP_DIR, file), "rb") as f:
+                    data_temp = pickle.load(f)
+                    # Security concerns over unpickling objects is accepted
                     # You should know the files you are working with
 
                     print(type(data_temp))
@@ -37,7 +38,6 @@ if __name__ == "__main__":
                             json.dump(data_temp, fd)
                     except TypeError as exception:
                         print(f"Could not save {file}. Inappropriate type: {exception}")
-
 
     if os.path.exists(TEMP_DIR):
         shutil.rmtree(TEMP_DIR, ignore_errors=True)
