@@ -27,6 +27,18 @@ def get_git_conf_val(git_conf_file: str, section: str, param: str):
     return res
 
 
+def get_git_modules(path: str) -> str:
+    MODULES_FILE = ".gitmodules"
+    path = f"{path}{MODULES_FILE}"
+    if not os.path.exists(path):
+        return ""
+
+    text: str
+    with open(path, "rt") as f:
+        text = f.read()
+    return text
+
+
 if __name__ == "__main__":
     BASE_DIR = "./"
     GIT_DIR = ".git/"
@@ -34,10 +46,16 @@ if __name__ == "__main__":
         print("Not a git directory!")
         exit(1)
 
+    git_modules = get_git_modules(BASE_DIR)
+
     for f in os.listdir(BASE_DIR):
         subdir = f"{BASE_DIR}{f}/"
-        if os.path.isdir(subdir) and os.path.exists(f"{subdir}{GIT_DIR}"):
-            print(f"Git dir found: {f}")
+        if (
+            os.path.isdir(subdir)
+            and os.path.exists(f"{subdir}{GIT_DIR}")
+            and f not in git_modules
+        ):
+            print(f"Git dir not in git modules file found: {f}")
 
             git_conf = get_conf(f"{subdir}{GIT_DIR}")
             git_url = get_git_conf_val(git_conf, "origin", "url")
